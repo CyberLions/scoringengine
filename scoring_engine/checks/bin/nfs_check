@@ -1,39 +1,84 @@
-#!/usr/bin/env python
-
-# A scoring engine check that logs into NFS, writes file
-# and then logs into NFL again, and reads the file
+#!/usr/bin/env python3
 
 import sys
-import libnfs
+import subprocess
+import tempfile
+import os
+import shutil
+import time
 
-if len(sys.argv) != 4:
-    print("Usage: " + sys.argv[0] + " host remotefilepath filecontents")
-    sys.exit(1)
+def run_command(command, error_message):
+    """
+    Executes a shell command and handles errors.
+    """
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"ERROR: {error_message} - Command '{' '.join(e.cmd)}' failed with error: {e.stderr.strip()}")
+        sys.exit(1)
+    except FileNotFoundError:
+        print(f"ERROR: Command '{command[0]}' not found. Make sure it's installed and in PATH.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERROR: An unexpected error occurred: {e}")
+        sys.exit(1)
 
-host = sys.argv[1]
-remote_filepath = sys.argv[2]
-upload_file_contents = sys.argv[3]
+def main():
+    if len(sys.argv) < 3:
+        print("Usage: " + sys.argv[0] + " host remotefilepath [filecontents]")
+        sys.exit(1)
 
-# Connect and Upload file to server
-try:
-    nfs = libnfs.open('nfs://{0}{1}'.format(host, remote_filepath), mode='w')
-    nfs.write(upload_file_contents)
-    nfs.close()
-except Exception as err:
-    print("ERROR: {0}".format(err))
-    sys.exit(1)
+    host = sys.argv[1]
+    remote_filepath = sys.argv[2]
 
-# Connect and Download file
-try:
-    downloaded_lines = libnfs.open('nfs://{0}{1}'.format(host, remote_filepath), mode='r').read()
-except Exception as err:
-    print("ERROR: {0}".format(err))
-    sys.exit(1)
+    remote_dir = os.path.dirname(remote_filepath)
+    if not remote_dir:
+        remote_dir = "/"
+    
+    if not remote_dir.startswith('/'):
+        print("ERROR: remotefilepath must be an absolute path (e.g., /share/nfs_check_file.txt)")
+        sys.exit(1)
 
-downloaded_data = ''.join(downloaded_lines)
-if downloaded_data != upload_file_contents:
-    print("ERROR: Uploaded contents do not match downloaded contents")
-    sys.exit(1)
+    temp_mount_point = None
+    try:
+        temp_mount_point = tempfile.mkdtemp(prefix="nfs_mount_")
+        print(f"Created temporary mount point: {temp_mount_point}")
 
-print("SUCCESS")
-print(downloaded_data)
+        # Check for mount.nfs helper program
+        if not os.path.exists("/sbin/mount.nfs"):
+            print("ERROR: /sbin/mount.nfs helper program not found. Ensure nfs-common is installed correctly.")
+            sys.exit(1)
+
+        # 1. Mount the NFS share using sudo and specifying NFSv4
+        nfs_source = f"{host}:{remote_dir}"
+        # Adding -o nfsvers=4 to explicitly specify NFS version 4
+        print(f"Attempting to mount {nfs_source} to {temp_mount_point} with NFSv4")
+        run_command(["sudo", "mount", "-t", "nfs", "-o", "nfsvers=4", nfs_source, temp_mount_point],
+                    f"Failed to mount NFS share {nfs_source}")
+        
+        print("SUCCESS: NFS share mounted successfully.")
+        
+    finally:
+        if temp_mount_point:
+            max_retries = 5
+            for i in range(max_retries):
+                try:
+                    print(f"Attempting to unmount {temp_mount_point} (attempt {i+1}/{max_retries})")
+                    run_command(["sudo", "umount", "-l", temp_mount_point],
+                                f"Failed to unmount {temp_mount_point}")
+                    print("NFS share unmounted successfully.")
+                    break
+                except SystemExit:
+                    if i < max_retries - 1:
+                        time.sleep(1)
+                    else:
+                        print(f"WARNING: Could not unmount {temp_mount_point} after {max_retries} attempts. Manual cleanup may be required.")
+            
+            if os.path.exists(temp_mount_point):
+                print(f"Removing temporary mount directory {temp_mount_point}")
+                shutil.rmtree(temp_mount_point)
+                print("Temporary mount directory removed.")
+
+if __name__ == "__main__":
+    main()

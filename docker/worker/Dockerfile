@@ -74,10 +74,13 @@ RUN \
 
 # RDP Check
 RUN apt-get install -y freerdp2-x11
+RUN apt-get install -y xvfb
 
 # NFS Check
 RUN apt-get install -y libnfs-dev
 RUN pip install -I "libnfs==1.0.post4"
+RUN apt update
+RUN apt install -y nfs-common
 
 # Telnet Check
 RUN pip install -I "telnetlib3==1.0.1"
@@ -90,9 +93,10 @@ RUN rm -rf /var/lib/apt/lists/*
 COPY bin/worker /app/bin/worker
 COPY docker/worker/sudoers /etc/sudoers
 
-USER engine
+USER root
 
 COPY scoring_engine /app/scoring_engine
+RUN chmod +x /app/scoring_engine/checks/bin/nfs_check
 RUN pip install -e .
 
 CMD ["./wait-for-port.sh", "redis:6379", "/app/bin/worker"]
