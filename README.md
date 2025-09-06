@@ -31,6 +31,10 @@ We also provide the ability to run it in an 'example' mode. This means only the 
 SCORINGENGINE_EXAMPLE=true docker-compose up
 ```
 
+```
+docker compose up -d --no-recreate --scale worker=3 worker
+```
+
 The app will be running at [http://localhost](http://localhost)
 
 Log in with any of the following logins at http://localhost:
