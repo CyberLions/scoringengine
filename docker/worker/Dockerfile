@@ -73,7 +73,7 @@ RUN \
     unixodbc-dev
 
 # RDP Check
-RUN apt-get install -y freerdp2-x11
+RUN apt-get update && apt-get install -y freerdp3-x11
 RUN apt-get install -y xvfb
 
 # NFS Check
