@@ -76,12 +76,6 @@ RUN \
 RUN apt-get update && apt-get install -y freerdp3-x11
 RUN apt-get install -y xvfb
 
-# NFS Check
-RUN apt-get install -y libnfs-dev
-RUN pip install -I "libnfs==1.0.post4"
-RUN apt update
-RUN apt install -y nfs-common
-
 # Telnet Check
 RUN pip install -I "telnetlib3==1.0.1"
 
