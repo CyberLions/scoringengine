@@ -1,8 +1,2 @@
 #!/bin/bash
-username=$1
-password=$2
-host=$3
-port=$4
-xvfb-run -a xfreerdp /auth-only /cert-ignore /u:$username /p:$password /v:$host:$port
-RETVAL=$?
-[ $RETVAL -eq 0 ] && echo SUCCESS
+username=$1; password=$2; host=$3; port=${4:-3389}; xvfb-run -a xfreerdp3 +auth-only /cert:ignore /u:"$username" /p:"$password" /v:"$host:$port" >/dev/null 2>&1; [ $? -eq 0 ] && echo SUCCESS || echo FAILURE
