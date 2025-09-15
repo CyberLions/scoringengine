@@ -60,6 +60,7 @@ USER root
 
 COPY scoring_engine /app/scoring_engine
 RUN chmod +x /app/scoring_engine/checks/bin/nfs_check
+RUN chmod +x /app/scoring_engine/checks/bin/rdp_check
 RUN pip install -e .
 
 CMD ["./wait-for-port.sh", "redis:6379", "/app/bin/worker"]
