@@ -41,37 +41,6 @@ RUN apt-get install -y dnsutils
 # Postgresql Check
 RUN apt-get install -y postgresql-client
 
-# MSSQL Check
-# RUN \
-  # curl -s https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-  # Package Repo for Ubuntu 16.04
-  # curl -s https://packages.microsoftdcom/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/msprod.list && \
-  # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF
-  # Package Repo for Debian 9 (Docker Hub Python Image)
-  # echo "deb [arch=amd64] https://packages.microsoft.com/debian/9/prod "stretch" main" >> /etc/apt/sources.list.d/msprod.list && \
-  # Package Repo for Debian 11 (Docker Hub Python Image)
-  # echo "deb [arch=amd64] https://packages.microsoft.com/debian/11/prod \"bullseye\" main" >> /etc/apt/sources.list.d/msprod.list && \
-  # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF
-  # curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-  # apt-add-repository https://packages.microsoft.com/debian/11/prod && \
-  # apt-get update && \
-  # ACCEPT_EULA=Y apt-get install -y \
-    # locales \
-    # mssql-tools \
-    # unixodbc-dev && \
-  # echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
-  # locale-gen
-RUN \
-  curl -o /tmp/packages-microsoft-prod.deb https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb && \
-  dpkg -i /tmp/packages-microsoft-prod.deb && \
-  # curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-  # curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/msprod.list && \
-  apt-get update && \
-  ACCEPT_EULA=Y apt-get install -y \
-    mssql-tools18 \
-    sqlcmd \
-    unixodbc-dev
-
 # RDP Check
 RUN apt-get update && apt-get install -y freerdp3-x11
 RUN apt-get install -y xvfb
