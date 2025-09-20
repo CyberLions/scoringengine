@@ -42,7 +42,7 @@ RUN apt-get install -y dnsutils
 RUN apt-get install -y postgresql-client
 
 # RDP Check
-RUN apt-get update && apt-get install -y freerdp2-x11
+RUN apt-get update && apt-get install -y freerdp3-x11
 RUN apt-get install -y xvfb
 
 # Telnet Check
