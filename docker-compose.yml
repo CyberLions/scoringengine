@@ -12,8 +12,18 @@ services:
       - redis:/data
     networks:
       - default
-    # ports:
-    #   - 6379:6379
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   mysql:
     image: mariadb:10
     environment:
@@ -31,8 +41,18 @@ services:
       - mysql:/var/lib/mysql
     networks:
       - default
-    # ports:
-    #   - 3306:3306
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   nginx:
     image: nginx:1.23.1
     depends_on:
@@ -54,6 +74,18 @@ services:
       - ./scoring_engine/web/static/:/usr/share/nginx/html/static/
     networks:
       - default
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   base:
     image: scoringengine/base
     build:
@@ -62,6 +94,18 @@ services:
       cache_from:
         - scoringengine/base
         - base:latest
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   bootstrap:
     image: scoringengine/bootstrap
     build:
@@ -82,6 +126,18 @@ services:
       - SCORINGENGINE_EXAMPLE
       - SCORINGENGINE_OVERWRITE_DB
       - SCORINGENGINE_VERSION
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   engine:
     image: scoringengine/engine
     build:
@@ -103,6 +159,18 @@ services:
     environment:
       - SCORINGENGINE_EXAMPLE
       - SCORINGENGINE_VERSION
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   worker:
     image: scoringengine/worker
     build:
@@ -123,6 +191,18 @@ services:
       - SCORINGENGINE_VERSION
       - DISPLAY=:1
     privileged: true
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
+
   web:
     image: scoringengine/web
     build:
@@ -151,6 +231,17 @@ services:
       - injects:/var/uploads/
     environment:
       - SCORINGENGINE_VERSION
+    dns:
+      - 10.1.1.11
+      - 10.2.1.11
+      - 10.3.1.11
+      - 10.4.1.11
+      - 10.5.1.11
+      - 10.6.1.11
+      - 10.7.1.11
+      - 10.8.1.11
+      - 10.9.1.11
+      - 10.10.1.11
 
 volumes:
   injects:
