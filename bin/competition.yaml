@@ -16,6 +16,58 @@ teams:
   - username: team1user1
     password: QWERTY123!
   services:
+    - name: RDP-BlackPearl
+      check_name: RDPCheck
+      host: 10.1.1.10
+      port: 3390
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: RDP-JollyRoger
+      check_name: RDPCheck
+      host: 10.1.2.11
+      port: 3390
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: SMB-BlackPearl
+      check_name: SMBCheck
+      host: 10.1.1.10
+      port: 445
+      points: 100
+      accounts:
+      - username: HighTide74
+        password: Passw0rd123!
+      environments:
+      - matching_content: "^SUCCESS"
+        properties:
+        - name: remote_name
+          value: seven.seas
+        - name: share
+          value: share
+        - name: file
+          value: smb_check_file.txt
+        - name: hash
+          value: 1c537162f700b0d8e33f47ee88a112539e77cfc173285883bfa9baf4b2cce44c
+    - name: WinRM-JollyRoger
+      check_name: WinRMCheck
+      host: 10.1.2.11
+      port: 5985
+      points: 100
+      accounts:
+      - username: quartermaster
+        password: Passw0rd123!
+      environments:
+      - matching_content: "^SUCCESS"
+        properties:
+        - name: commands
+          value: ipconfig/all;whoami
     - name: LDAP-BlackPearl
       check_name: LDAPCheck
       host: 10.1.1.10
@@ -211,6 +263,58 @@ teams:
   - username: team2user1
     password: QWERTY123!
   services:
+    - name: RDP-BlackPearl
+      check_name: RDPCheck
+      host: 10.2.1.10
+      port: 3390
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: RDP-JollyRoger
+      check_name: RDPCheck
+      host: 10.2.2.11
+      port: 3390
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: SMB-BlackPearl
+      check_name: SMBCheck
+      host: 10.2.1.10
+      port: 445
+      points: 100
+      accounts:
+      - username: HighTide74
+        password: Passw0rd123!
+      environments:
+      - matching_content: "^SUCCESS"
+        properties:
+        - name: remote_name
+          value: seven.seas
+        - name: share
+          value: share
+        - name: file
+          value: smb_check_file.txt
+        - name: hash
+          value: 1c537162f700b0d8e33f47ee88a112539e77cfc173285883bfa9baf4b2cce44c
+    - name: WinRM-JollyRoger
+      check_name: WinRMCheck
+      host: 10.2.2.11
+      port: 5985
+      points: 100
+      accounts:
+      - username: quartermaster
+        password: Passw0rd123!
+      environments:
+      - matching_content: "^SUCCESS"
+        properties:
+        - name: commands
+          value: ipconfig/all;whoami
     - name: LDAP-BlackPearl
       check_name: LDAPCheck
       host: 10.2.1.10
