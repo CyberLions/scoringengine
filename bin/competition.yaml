@@ -50,7 +50,7 @@ teams:
         - name: remote_name
           value: seven.seas
         - name: share
-          value: share
+          value: Booty
         - name: file
           value: smb_check_file.txt
         - name: hash
@@ -297,7 +297,7 @@ teams:
         - name: remote_name
           value: seven.seas
         - name: share
-          value: share
+          value: Booty
         - name: file
           value: smb_check_file.txt
         - name: hash
