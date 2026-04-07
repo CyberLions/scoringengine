@@ -19,7 +19,7 @@ teams:
     - name: RDP-BlackPearl
       check_name: RDPCheck
       host: 10.1.1.10
-      port: 3390
+      port: 3389
       points: 100
       accounts:
       - username: SaltyDog23
@@ -29,7 +29,7 @@ teams:
     - name: RDP-JollyRoger
       check_name: RDPCheck
       host: 10.1.2.11
-      port: 3390
+      port: 3389
       points: 100
       accounts:
       - username: SaltyDog23
@@ -64,7 +64,7 @@ teams:
       - username: quartermaster
         password: Passw0rd123!
       environments:
-      - matching_content: "^SUCCESS"
+      - matching_content: "SUCCESS"
         properties:
         - name: commands
           value: ipconfig/all;whoami
@@ -266,7 +266,7 @@ teams:
     - name: RDP-BlackPearl
       check_name: RDPCheck
       host: 10.2.1.10
-      port: 3390
+      port: 3389
       points: 100
       accounts:
       - username: SaltyDog23
@@ -276,7 +276,7 @@ teams:
     - name: RDP-JollyRoger
       check_name: RDPCheck
       host: 10.2.2.11
-      port: 3390
+      port: 3389
       points: 100
       accounts:
       - username: SaltyDog23
@@ -311,7 +311,7 @@ teams:
       - username: quartermaster
         password: Passw0rd123!
       environments:
-      - matching_content: "^SUCCESS"
+      - matching_content: "SUCCESS"
         properties:
         - name: commands
           value: ipconfig/all;whoami
