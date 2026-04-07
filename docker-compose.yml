@@ -43,7 +43,7 @@ services:
       - 80:80
       - 443:443
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "wget", "-qO-", "http://localhost/healthz"]
       interval: 30s
       timeout: 3s
       retries: 10
