@@ -26,6 +26,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 
+from scoring_engine.cache import cache
 from scoring_engine.cache_helper import (
     update_all_cache,
     update_all_inject_data,
@@ -1238,16 +1239,23 @@ def admin_toggle_engine():
         return {"status": "Unauthorized"}, 403
 
 
+@cache.memoize(timeout=30)
+def _get_engine_stats_cached():
+    total = db.session.query(Check).count()
+    passed = db.session.query(Check).filter(Check.result.is_(True)).count()
+    return {
+        "round_number": Round.get_last_round_num(),
+        "num_passed_checks": passed,
+        "num_failed_checks": total - passed,
+        "total_checks": total,
+    }
+
+
 @mod.route("/api/admin/get_engine_stats")
 @login_required
 def admin_get_engine_stats():
     if current_user.is_white_team:
-        engine_stats = {}
-        engine_stats["round_number"] = Round.get_last_round_num()
-        engine_stats["num_passed_checks"] = db.session.query(Check).filter_by(result=True).count()
-        engine_stats["num_failed_checks"] = db.session.query(Check).filter_by(result=False).count()
-        engine_stats["total_checks"] = db.session.query(Check).count()
-        return jsonify(engine_stats)
+        return jsonify(_get_engine_stats_cached())
     else:
         return {"status": "Unauthorized"}, 403
 
@@ -1281,34 +1289,37 @@ def admin_get_queue_stats():
         return {"status": "Unauthorized"}, 403
 
 
+@cache.memoize(timeout=30)
+def _get_competition_summary_cached():
+    blue_team_count = db.session.query(Team).filter(Team.color == "Blue").count()
+    total_services = db.session.query(Service).join(Team).filter(Team.color == "Blue").count()
+    total_checks = db.session.query(Check).count()
+    passed_checks = db.session.query(Check).filter(Check.result.is_(True)).count()
+
+    overall_uptime = 0.0
+    if total_checks > 0:
+        overall_uptime = round((passed_checks / total_checks) * 100, 1)
+
+    last_round = Round.get_last_round_num()
+    currently_passing = 0
+    if last_round > 0:
+        currently_passing = (
+            db.session.query(Check).join(Round).filter(Round.number == last_round, Check.result.is_(True)).count()
+        )
+
+    return {
+        "blue_teams": blue_team_count,
+        "total_services": total_services,
+        "currently_passing": currently_passing,
+        "overall_uptime": overall_uptime,
+    }
+
+
 @mod.route("/api/admin/get_competition_summary")
 @login_required
 def admin_get_competition_summary():
     if current_user.is_white_team:
-        blue_teams = db.session.query(Team).filter(Team.color == "Blue").all()
-        total_services = db.session.query(Service).join(Team).filter(Team.color == "Blue").count()
-        total_checks = db.session.query(Check).count()
-        passed_checks = db.session.query(Check).filter_by(result=True).count()
-
-        overall_uptime = 0.0
-        if total_checks > 0:
-            overall_uptime = round((passed_checks / total_checks) * 100, 1)
-
-        last_round = Round.get_last_round_num()
-        currently_passing = 0
-        if last_round > 0:
-            currently_passing = (
-                db.session.query(Check).join(Round).filter(Round.number == last_round, Check.result == True).count()
-            )
-
-        return jsonify(
-            {
-                "blue_teams": len(blue_teams),
-                "total_services": total_services,
-                "currently_passing": currently_passing,
-                "overall_uptime": overall_uptime,
-            }
-        )
+        return jsonify(_get_competition_summary_cached())
     else:
         return {"status": "Unauthorized"}, 403
 

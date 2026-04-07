@@ -161,9 +161,7 @@ def permissions():
             blue_team_update_account_passwords=Setting.get_setting("blue_team_update_account_passwords").value,
             blue_team_view_check_output=Setting.get_setting("blue_team_view_check_output").value,
             anonymize_team_names=(
-                Setting.get_setting("anonymize_team_names").value
-                if Setting.get_setting("anonymize_team_names")
-                else False
+                _s.value if (_s := Setting.get_setting("anonymize_team_names")) else False
             ),
             inject_scores_visible=Setting.get_setting("inject_scores_visible").value,
         )

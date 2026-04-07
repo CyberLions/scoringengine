@@ -81,6 +81,40 @@ def get_sla_config():
     return SLAConfig()
 
 
+def get_consecutive_failures_bulk(service_ids):
+    """
+    Count consecutive failures for multiple services in a single query.
+
+    Returns a dict mapping service_id -> consecutive failure count.
+    Services with no recent failures (or no checks) are not included (treat as 0).
+    """
+    from scoring_engine.models.check import Check
+
+    if not service_ids:
+        return {}
+
+    # Fetch all completed checks for the given services in descending round order
+    checks = (
+        db.session.query(Check.service_id, Check.result)
+        .filter(Check.service_id.in_(service_ids))
+        .filter(Check.completed == True)  # noqa: E712
+        .order_by(Check.service_id, desc(Check.round_id))
+        .all()
+    )
+
+    consecutive = {}
+    done = set()
+    for service_id, result in checks:
+        if service_id in done:
+            continue
+        if not result:
+            consecutive[service_id] = consecutive.get(service_id, 0) + 1
+        else:
+            done.add(service_id)
+
+    return consecutive
+
+
 def get_consecutive_failures(service_id):
     """
     Count consecutive failures for a service from the most recent check going backwards.

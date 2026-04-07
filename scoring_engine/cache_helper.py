@@ -6,6 +6,14 @@ from flask_caching.backends import NullCache
 from scoring_engine.cache import cache
 
 
+def update_admin_stats():
+    """Clear cached admin engine stats and competition summary."""
+    from scoring_engine.web.views.api.admin import _get_engine_stats_cached, _get_competition_summary_cached
+
+    cache.delete_memoized(_get_engine_stats_cached)
+    cache.delete_memoized(_get_competition_summary_cached)
+
+
 def update_all_cache(app_or_ctx=None):
     """Clear and rebuild all cached values.
 
@@ -34,6 +42,7 @@ def update_all_cache(app_or_ctx=None):
     update_sla_data()
     update_flags_data()
     update_stats()
+    update_admin_stats()
 
     # Notify SSE clients that new data is available
     from scoring_engine.events import publish_event

@@ -13,7 +13,12 @@ from scoring_engine.models.round import Round
 from scoring_engine.models.service import Service
 from scoring_engine.models.setting import Setting
 from scoring_engine.models.team import Team
-from scoring_engine.sla import apply_dynamic_scoring_to_round, calculate_team_total_penalties, get_sla_config
+from scoring_engine.sla import (
+    apply_dynamic_scoring_to_round,
+    calculate_sla_penalty_percent,
+    get_consecutive_failures_bulk,
+    get_sla_config,
+)
 
 from . import mod
 
@@ -115,6 +120,25 @@ def _get_bar_data_cached(anonymize, show_both):
     blue_teams = db.session.query(Team).filter(Team.color == "Blue").order_by(Team.id).all()
     team_name_map = Team.get_team_name_mapping(anonymize=anonymize, show_both=show_both)
 
+    # Pre-compute SLA penalties in bulk to avoid N+1 per-service queries
+    if sla_config.sla_enabled:
+        all_service_ids = [s.id for t in blue_teams for s in t.services]
+        consecutive_failures_map = get_consecutive_failures_bulk(all_service_ids)
+
+        # Compute per-team penalty using pre-fetched consecutive failure counts
+        team_penalties = {}
+        for blue_team in blue_teams:
+            total_penalty = 0
+            for service in blue_team.services:
+                cf = consecutive_failures_map.get(service.id, 0)
+                penalty_pct = calculate_sla_penalty_percent(cf, sla_config)
+                if penalty_pct > 0:
+                    base = service.score_earned
+                    total_penalty += int(base * (penalty_pct / 100))
+            team_penalties[blue_team.id] = total_penalty
+    else:
+        team_penalties = {}
+
     for blue_team in blue_teams:
         display_name = team_name_map.get(blue_team.id, blue_team.name)
         team_labels.append(display_name)
@@ -128,7 +152,7 @@ def _get_bar_data_cached(anonymize, show_both):
         # Total base score includes both service and inject scores
         total_base_score = service_score + inject_score
         if sla_config.sla_enabled:
-            penalty = calculate_team_total_penalties(blue_team, sla_config)
+            penalty = team_penalties.get(blue_team.id, 0)
             team_sla_penalties.append(str(penalty))
             if sla_config.allow_negative:
                 adjusted = total_base_score - penalty
@@ -190,14 +214,19 @@ def _get_line_data_cached(anonymize, show_both):
         adjusted_score = apply_dynamic_scoring_to_round(round_number, round_score, sla_config)
         scores_dict[team_id][round_id] = adjusted_score
 
+    # Sort round_ids by round number so scores align with the rounds axis
+    sorted_round_ids = sorted(rounds_map.keys(), key=lambda rid: rounds_map[rid])
+
     team_name_map = Team.get_team_name_mapping(anonymize=anonymize, show_both=show_both)
 
     for team_id, team_name, rgb_color in blue_teams:
         display_name = team_name_map.get(team_id, team_name)
+        # Build per-round score array aligned to every round (0 for rounds with no passes)
+        per_round = [scores_dict[team_id].get(rid, 0) for rid in sorted_round_ids]
         team_data["team"].append(
             {
                 "name": display_name,
-                "scores": list(accumulate(scores_dict[team_id].values(), initial=0)),
+                "scores": list(accumulate(per_round, initial=0)),
                 "color": rgb_color,
             }
         )
