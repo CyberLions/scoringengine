@@ -24,23 +24,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     sudo \
     xvfb
 
-# Install Microsoft SQL Server tools and freerdp in single layer
 # freerdp2-x11 was renamed to freerdp3-x11 on newer distributions
 # Some distributions ship only a generic "freerdp" package
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    curl -o /tmp/packages-microsoft-prod.deb https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb && \
-    dpkg -i /tmp/packages-microsoft-prod.deb && \
-    rm /tmp/packages-microsoft-prod.deb && \
     apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
-      # Microsoft SQL Server checks
-      mssql-tools18 \
-      sqlcmd \
-      unixodbc-dev \
-    && (apt-get install -y --no-install-recommends freerdp2-x11 || \
-        apt-get install -y --no-install-recommends freerdp3-x11 || \
-        apt-get install -y --no-install-recommends freerdp)
+    (apt-get install -y --no-install-recommends freerdp2-x11 || \
+     apt-get install -y --no-install-recommends freerdp3-x11 || \
+     apt-get install -y --no-install-recommends freerdp)
 
 # Worker-specific Python packages + Playwright in a single pip layer
 # Note: update docker/engine/Dockerfile as well when changing playwright version

@@ -257,17 +257,19 @@ teams:
       - name: body
         value: This is the body of the email
   - name: Webapp Nginx
-    check_name: WebappNginxdefaultpageCheck
+    check_name: HTTPSCheck
     host: testbed_web
     port: 443
     points: 100
     environments:
     - matching_content: 'PASSED'
       properties:
-      - name: scheme
-        value: https
-      - name: basepath
-        value: /
+      - name: useragent
+        value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+      - name: vhost
+        value: testbed_web
+      - name: uri
+        value: "/"
   # - name: AGENT
   #   check_name: AgentCheck
   #   host: testbed_icmp
@@ -677,17 +679,19 @@ teams:
       - name: body
         value: This is the body of the email
   - name: Webapp Nginx
-    check_name: WebappNginxdefaultpageCheck
+    check_name: HTTPSCheck
     host: testbed_web
     port: 443
     points: 100
     environments:
     - matching_content: 'PASSED'
       properties:
-      - name: scheme
-        value: https
-      - name: basepath
-        value: /
+      - name: useragent
+        value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+      - name: vhost
+        value: testbed_web
+      - name: uri
+        value: "/"
   # - name: AGENT
   #   check_name: AgentCheck
   #   host: testbed_icmp
@@ -1097,17 +1101,19 @@ teams:
       - name: body
         value: This is the body of the email
   - name: Webapp Nginx
-    check_name: WebappNginxdefaultpageCheck
+    check_name: HTTPSCheck
     host: testbed_web
     port: 443
     points: 100
     environments:
     - matching_content: 'PASSED'
       properties:
-      - name: scheme
-        value: https
-      - name: basepath
-        value: /
+      - name: useragent
+        value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+      - name: vhost
+        value: testbed_web
+      - name: uri
+        value: "/"
   # - name: AGENT
   #   check_name: AgentCheck
   #   host: testbed_icmp
@@ -1517,17 +1523,19 @@ teams:
       - name: body
         value: This is the body of the email
   - name: Webapp Nginx
-    check_name: WebappNginxdefaultpageCheck
+    check_name: HTTPSCheck
     host: testbed_web
     port: 443
     points: 100
     environments:
     - matching_content: 'PASSED'
       properties:
-      - name: scheme
-        value: https
-      - name: basepath
-        value: /
+      - name: useragent
+        value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+      - name: vhost
+        value: testbed_web
+      - name: uri
+        value: "/"
   # - name: AGENT
   #   check_name: AgentCheck
   #   host: testbed_icmp
@@ -1937,17 +1945,19 @@ teams:
       - name: body
         value: This is the body of the email
   - name: Webapp Nginx
-    check_name: WebappNginxdefaultpageCheck
+    check_name: HTTPSCheck
     host: testbed_web
     port: 443
     points: 100
     environments:
     - matching_content: 'PASSED'
       properties:
-      - name: scheme
-        value: https
-      - name: basepath
-        value: /
+      - name: useragent
+        value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+      - name: vhost
+        value: testbed_web
+      - name: uri
+        value: "/"
   # - name: AGENT
   #   check_name: AgentCheck
   #   host: testbed_icmp
