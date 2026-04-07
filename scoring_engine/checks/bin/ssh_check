@@ -73,7 +73,7 @@ def connect_ssh(host, port, username, password):
 def execute_command(client, command):
     """Execute a command and return (stdout, stderr, exit_code)."""
     try:
-        client_stdin, client_stdout, client_stderr = client.exec_command(command, timeout=15)
+        client_stdin, client_stdout, client_stderr = client.exec_command(command, timeout=30)
     except paramiko.SSHException as e:
         raise RuntimeError(f"Failed to open channel: {e}")
     exit_code = client_stdout.channel.recv_exit_status()
