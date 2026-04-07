@@ -117,7 +117,7 @@ teams:
         - name: useragent
           value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
         - name: vhost
-          value: 10.10.1.11
+          value: 10.1.1.11
         - name: uri
           value: /healthz
     - name: SSH-PoopDeck
@@ -352,7 +352,7 @@ teams:
         - name: qtype
           value: A
         - name: domain
-          value: silkroad1.ccso.org
+          value: silkroad2.ccso.org
     - name: HTTP-PoopDeck
       check_name: HTTPCheck
       host: 10.2.1.11
@@ -364,7 +364,7 @@ teams:
         - name: useragent
           value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
         - name: vhost
-          value: 10.10.1.11
+          value: 10.2.1.11
         - name: uri
           value: /healthz
     - name: SSH-PoopDeck
@@ -494,6 +494,253 @@ teams:
     - name: SSH-Courier
       check_name: SSHCheck
       host: 10.2.3.12
+      port: 22
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: whoami
+- name: Team3
+  color: Blue
+  users:
+  - username: team3user1
+    password: QWERTY123!
+  services:
+    - name: RDP-BlackPearl
+      check_name: RDPCheck
+      host: 10.3.1.10
+      port: 3389
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: RDP-JollyRoger
+      check_name: RDPCheck
+      host: 10.3.2.11
+      port: 3389
+      points: 100
+      accounts:
+      - username: SaltyDog23
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS$"
+    - name: SMB-BlackPearl
+      check_name: SMBCheck
+      host: 10.3.1.10
+      port: 445
+      points: 100
+      accounts:
+      - username: HighTide74
+        password: Passw0rd123!
+      environments:
+      - matching_content: "^SUCCESS"
+        properties:
+        - name: remote_name
+          value: seven.seas
+        - name: share
+          value: Booty
+        - name: file
+          value: smb_check_file.txt
+        - name: hash
+          value: 1c537162f700b0d8e33f47ee88a112539e77cfc173285883bfa9baf4b2cce44c
+    - name: WinRM-JollyRoger
+      check_name: WinRMCheck
+      host: 10.3.2.11
+      port: 5985
+      points: 100
+      accounts:
+      - username: quartermaster
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: ipconfig/all;whoami
+    - name: LDAP-BlackPearl
+      check_name: LDAPCheck
+      host: 10.3.1.10
+      port: 389
+      points: 50
+      accounts:
+      - username: PlunderMate56
+        password: Passw0rd123!
+      environments:
+      - matching_content: "result: 0 Success"
+        properties:
+        - name: domain_base
+          value: dc=seven,dc=seas
+    - name: WinRM-BlackPearl
+      check_name: WinRMCheck
+      host: 10.3.1.10
+      port: 5985
+      points: 100
+      accounts:
+      - username: quartermaster
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: ipconfig/all;whoami
+    - name: DNS-PoopDeck
+      check_name: DNSCheck
+      host: 10.3.1.11
+      port: 53
+      points: 100
+      environments:
+      - matching_content: 'ANSWER SECTION'
+        properties:
+        - name: qtype
+          value: A
+        - name: domain
+          value: silkroad3.ccso.org
+    - name: HTTP-PoopDeck
+      check_name: HTTPCheck
+      host: 10.3.1.11
+      port: 80
+      points: 100
+      environments:
+      - matching_content: 'true'
+        properties:
+        - name: useragent
+          value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+        - name: vhost
+          value: 10.3.1.11
+        - name: uri
+          value: /healthz
+    - name: SSH-PoopDeck
+      check_name: SSHCheck
+      host: 10.3.1.11
+      port: 22
+      points: 100
+      accounts:
+      - username: dreadpirate
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: whoami
+    - name: MySQL-SilkRoad
+      check_name: MYSQLCheck
+      host: 10.3.2.10
+      port: 3306
+      points: 100
+      accounts:
+      - username: sqluser
+        password: Passw0rd123!
+      environments:
+      - matching_content: creds
+        properties:
+        - name: database
+          value: db
+        - name: command
+          value: show tables;
+    - name: HTTP-SilkRoad
+      check_name: HTTPCheck
+      host: 10.3.2.10
+      port: 3000
+      points: 100
+      environments:
+      - matching_content: 'silky'
+        properties:
+        - name: useragent
+          value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+        - name: vhost
+          value: 10.3.2.10
+        - name: uri
+          value: /
+    - name: SSH-SilkRoad
+      check_name: SSHCheck
+      host: 10.3.2.10
+      port: 22
+      points: 100
+      accounts:
+      - username: dreadpirate
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: whoami
+    - name: FTP-Ballast
+      check_name: FTPCheck
+      host: 10.3.2.12
+      port: 21
+      points: 100
+      accounts:
+      - username: ftp-user
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: remotefilepath
+          value: "/ftp/upload/ftp_check_file.txt"
+        - name: filecontents
+          value: I am the FTP check file! You should probably make a backup of me. Pretend
+    - name: SSH-Ballast
+      check_name: SSHCheck
+      host: 10.3.2.12
+      port: 22
+      points: 100
+      accounts:
+      - username: dreadpirate
+        password: Passw0rd123!
+      environments:
+      - matching_content: "SUCCESS"
+        properties:
+        - name: commands
+          value: whoami
+    - name: VNC-Ballast
+      check_name: VNCCheck
+      host: 10.3.2.12
+      port: 5901
+      points: 100
+      accounts:
+      - username: SeaScourge30
+        password: Passw0rd123!
+      environments:
+      - matching_content: ACCOUNT FOUND
+    - name: SMTP-Courier
+      check_name: SMTPCheck
+      host: mail3.ccso.org
+      port: 587
+      points: 100
+      accounts:
+      - username: admiralnelson@ccso.org
+        password: Passw0rd123!
+      environments:
+      - matching_content: Successfully sent email
+        properties:
+        - name: touser
+          value: admiralnelson@ccso.org
+        - name: subject
+          value: A scoring engine test subject!
+        - name: body
+          value: Hello from SMTP check!
+    - name: HTTP-Roundcube
+      check_name: HTTPCheck
+      host: 10.3.3.12
+      port: 8080
+      points: 100
+      environments:
+      - matching_content: 'Roundcube Webmail'
+        properties:
+        - name: useragent
+          value: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+        - name: vhost
+          value: 10.3.3.12
+        - name: uri
+          value: /
+    - name: SSH-Courier
+      check_name: SSHCheck
+      host: 10.3.3.12
       port: 22
       points: 100
       accounts:
