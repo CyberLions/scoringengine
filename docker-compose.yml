@@ -1,4 +1,10 @@
 ---
+x-dns: &dns
+  dns:
+    - 10.1.1.11
+    - 10.2.1.11
+    - 10.3.1.11
+
 services:
   redis:
     image: "redis:${REDIS_VERSION:-7.0.4}"
@@ -13,6 +19,7 @@ services:
       - redis:/data
     networks:
       - default
+    <<: *dns
     # ports:
     #   - 6379:6379
   mysql:
@@ -32,6 +39,7 @@ services:
       - mysql:/var/lib/mysql
     networks:
       - default
+    <<: *dns
     # ports:
     #   - 3306:3306
   nginx:
@@ -55,6 +63,7 @@ services:
       - ./scoring_engine/web/static/:/usr/share/nginx/html/static/
     networks:
       - default
+    <<: *dns
   base:
     image: scoringengine/base
     build:
@@ -87,6 +96,7 @@ services:
       - SCORINGENGINE_EXAMPLE
       - SCORINGENGINE_OVERWRITE_DB
       - SCORINGENGINE_VERSION
+    <<: *dns
   engine:
     image: scoringengine/engine
     build:
@@ -112,6 +122,7 @@ services:
     environment:
       - SCORINGENGINE_EXAMPLE
       - SCORINGENGINE_VERSION
+    <<: *dns
   worker:
     image: scoringengine/worker
     build:
@@ -134,6 +145,7 @@ services:
       - SCORINGENGINE_VERSION
       - DISPLAY=:1
     privileged: true
+    <<: *dns
   web:
     image: scoringengine/web
     build:
@@ -165,6 +177,7 @@ services:
       - check_outputs:/var/check_outputs
     environment:
       - SCORINGENGINE_VERSION
+    <<: *dns
 
 volumes:
   check_outputs:
