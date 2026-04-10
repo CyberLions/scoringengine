@@ -4,17 +4,17 @@ teams:
   color: White
   users:
   - username: whiteteam
-    password: QWERTY123!
+    password: Sigma-Rizz67!
 - name: RedTeam
   color: Red
   users:
   - username: redteam
-    password: QWERTY123!
+    password: BallsInYourFace69!
 - name: Team1
   color: Blue
   users:
   - username: team1user1
-    password: QWERTY123!
+    password: Hat-Kitty212!
   services:
     - name: RDP-BlackPearl
       check_name: RDPCheck
@@ -261,7 +261,7 @@ teams:
   color: Blue
   users:
   - username: team2user1
-    password: QWERTY123!
+    password: Boy-Laugh421!
   services:
     - name: RDP-BlackPearl
       check_name: RDPCheck
@@ -508,7 +508,7 @@ teams:
   color: Blue
   users:
   - username: team3user1
-    password: QWERTY123!
+    password: Yes-Poplar452!
   services:
     - name: RDP-BlackPearl
       check_name: RDPCheck
