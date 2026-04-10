@@ -218,3 +218,6 @@ Full documentation is available at [https://scoringengine.readthedocs.io/en/late
 ## License
 
 Released under the [MIT License](LICENSE).
+
+## Workers
+`docker-compose up -d --no-recreate --scale worker=X worker`

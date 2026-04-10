@@ -230,7 +230,7 @@ teams:
           value: A scoring engine test subject!
         - name: body
           value: Hello from SMTP check!
-    - name: HTTP-Roundcube
+    - name: HTTP-Courier
       check_name: HTTPCheck
       host: 10.1.3.12
       port: 8080
@@ -477,7 +477,7 @@ teams:
           value: A scoring engine test subject!
         - name: body
           value: Hello from SMTP check!
-    - name: HTTP-Roundcube
+    - name: HTTP-Courier
       check_name: HTTPCheck
       host: 10.2.3.12
       port: 8080
@@ -724,7 +724,7 @@ teams:
           value: A scoring engine test subject!
         - name: body
           value: Hello from SMTP check!
-    - name: HTTP-Roundcube
+    - name: HTTP-Courier
       check_name: HTTPCheck
       host: 10.3.3.12
       port: 8080
