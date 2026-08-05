@@ -187,3 +187,16 @@ volumes:
 
 networks:
   default:
+    driver_opts:
+      # Containers default to MTU 1500 regardless of the host's egress MTU, so a
+      # worker advertises MSS 1460 on every check connection. When a scored host
+      # sits behind a lower-MTU path (OpenStack VXLAN, GRE/IPsec tunnels), its
+      # replies come back oversized and are dropped. PMTU discovery would
+      # normally correct this, but the ICMP "fragmentation needed" it depends on
+      # is filtered by most scored firewalls, so the connection simply hangs.
+      #
+      # Symptom: TCP connects and the small ClientHello goes out, then the
+      # handshake stalls until the check times out. Small-packet protocols on the
+      # same host (SSH) keep passing, which makes it look like a service fault
+      # rather than a network one.
+      com.docker.network.driver.mtu: ${DOCKER_NETWORK_MTU:-1400}
