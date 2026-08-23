@@ -60,6 +60,18 @@ USER engine
 COPY scoring_engine /app/scoring_engine
 RUN playwright install chromium
 
+USER root
+# MSSQL checks call sqlcmd (Microsoft ODBC 17). It is absent from the base image,
+# so MSSQLCheck fails with "sqlcmd: not found" until installed. v17's sqlcmd
+# matches the check's command with no TrustServerCertificate flag needed.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg && \
+    curl -sSL https://packages.microsoft.com/config/debian/12/prod.list -o /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && ACCEPT_EULA=Y apt-get install -y --no-install-recommends mssql-tools msodbcsql17 unixodbc-dev && \
+    ln -sf /opt/mssql-tools/bin/sqlcmd /usr/local/bin/sqlcmd
+USER engine
+
 # Xvfb is a virtual X server which tricks freerdp2
 # into thinking it has a screen. This is used for
 # RDP scorechecks.
