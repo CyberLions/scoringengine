@@ -70,6 +70,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl -sSL https://packages.microsoft.com/config/debian/12/prod.list -o /etc/apt/sources.list.d/mssql-release.list && \
     apt-get update && ACCEPT_EULA=Y apt-get install -y --no-install-recommends mssql-tools msodbcsql17 unixodbc-dev && \
     ln -sf /opt/mssql-tools/bin/sqlcmd /usr/local/bin/sqlcmd
+# ADCSWebEnrollCheck uses certipy to request a certificate via web enrollment.
+# Install via pipx so certipy's deps (impacket, cryptography, ...) stay isolated
+# from the engine's venv; the binary lands on PATH at /usr/local/bin.
+RUN pip install --no-cache-dir pipx && \
+    PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install certipy-ad
 USER engine
 
 # Xvfb is a virtual X server which tricks freerdp2
